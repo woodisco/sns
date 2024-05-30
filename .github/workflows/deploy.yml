@@ -22,12 +22,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-#      - name: Deploy to Heroku
-#        uses: AkhileshNS/heroku-deploy@v3.12.12
-#        with:
-#          # This will be used for authentication. You can find it in your heroku homepage account settings
-#          heroku_api_key:
-#          # Email that you use with heroku
-#          heroku_email:
-#          # The appname to use for deploying/updating
-#          heroku_app_name:
+      - name: Deploy to Heroku
+        uses: AkhileshNS/heroku-deploy@v3.12.12
+        with:
+          # This will be used for authentication. You can find it in your heroku homepage account settings
+          heroku_api_key: ${{ HEROKU_DEPLOY_KEY }}
+          # Email that you use with heroku
+          heroku_email: woodisco.official@gmail.com
+          # The appname to use for deploying/updating
+          heroku_app_name: fcampus-sns
