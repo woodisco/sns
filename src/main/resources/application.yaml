@@ -1,1 +1,2 @@
-spring.application.name=sns
+jwt:
+  secret-key: fast-campus.simple_sns_2022_secret_key
