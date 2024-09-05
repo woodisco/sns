@@ -1,6 +1,7 @@
 package com.fastcampus.sns.service;
 
 import com.fastcampus.sns.exception.ErrorCode;
+import com.fastcampus.sns.exception.SimpleSnsApplicationException;
 import com.fastcampus.sns.exception.SnsApplicationException;
 import com.fastcampus.sns.model.User;
 import com.fastcampus.sns.model.entity.UserEntity;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +26,7 @@ public class UserService {
     public User join(String userName, String password) {
         // check the userId not exist
         userEntityRepository.findByUserName(userName).ifPresent(it -> {
-            throw new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, String.format("userName is %s", userName));
+            throw new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, String.format("%s is not found", userName));
         });
 
         UserEntity savedUser = userEntityRepository.save(UserEntity.of(userName, encoder.encode(password)));
@@ -31,9 +34,14 @@ public class UserService {
     }
 
     public User loadUserByUsername(String userName) throws UsernameNotFoundException {
-        return redisRepository.getUser(userName).orElseGet(
-                () -> userRepository.findByUserName(userName).map(User::fromEntity).orElseThrow(
-                        () -> new SimpleSnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("userName is %s", userName))
-                ));
+        Optional<User> redisUser = redisRepository.getUser(userName);
+
+        if (redisUser.isPresent()) {
+            return redisUser.get();
+        } else {
+            return userEntityRepository.findByUserName(userName)
+                    .map(User::fromEntity)
+                    .orElseThrow(() -> new SimpleSnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s is not found", userName)));
+        }
     }
 }
