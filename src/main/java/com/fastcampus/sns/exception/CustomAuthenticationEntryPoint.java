@@ -1,5 +1,6 @@
 package com.fastcampus.sns.exception;
 
+import com.fastcampus.sns.controller.response.Response;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,6 +14,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setContentType("application/json");
         response.setStatus(ErrorCode.INVALID_TOKEN.getStatus().value());
-        response.getWriter().write(Response.error(ErrorCode.INVALID_TOKEN.name()).toStream());
+        response.getWriter().write(Response.error(ErrorCode.INVALID_TOKEN.name()).toString());
     }
 }

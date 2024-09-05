@@ -1,8 +1,13 @@
 package com.fastcampus.sns.utils;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.Date;
 
 public class JwtTokenUtils {
     public static Boolean validate(String token, String userName, String key) {
